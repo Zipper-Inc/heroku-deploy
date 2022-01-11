@@ -76,12 +76,14 @@ const deploy = ({
   if (usedocker) {
     execSync(
       `heroku container:push ${dockerHerokuProcessType} --app ${app_name} ${dockerBuildArgs}`,
-      appdir ? { cwd: appdir } : null
-    );
+      appdir ? { cwd: appdir, maxBuffer: 104857600 } : { maxBuffer: 104857600 }
+      );
+    console.log("ran heroku container:push");
     execSync(
       `heroku container:release ${dockerHerokuProcessType} --app ${app_name}`,
-      appdir ? { cwd: appdir } : null
+      appdir ? { cwd: appdir, maxBuffer: 104857600 } : { maxBuffer: 104857600 }
     );
+    console.log("ran heroku container:release");
   } else {
     let remote_branch = execSync(
       "git remote show heroku | grep 'HEAD' | cut -d':' -f2 | sed -e 's/^ *//g' -e 's/ *$//g'"
